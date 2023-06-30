@@ -48,6 +48,12 @@ def get_career_stats(player_name: str) -> dict:
 def get_game_stats(player_name, year) -> dict:
     document = parse_site(f"{NFL_URL}/players/{player_name}/stats/logs/{year}")
 
-    table: Node = document.css("table")[-1]
+    stats: dict = {}
+    for table in document.css("table"):
+        sub_season = table.parent.parent.css("h3")[0].text()
+        stats[sub_season] = scrape_table(table)
 
-    return scrape_table(table)
+    return stats
+
+
+# print(get_game_stats("saquon-barkley", "2022"))
