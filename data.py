@@ -12,16 +12,16 @@ def parse_site(url: str) -> HTMLParser:
     return HTMLParser(res.text)
 
 
-def scrape_table(table: Node) -> dict:
+def scrape_table(table: Node, prefix: str = "") -> dict:
     heads: list[Node] = table.css("thead tr th")[1:]
     stats: dict = {}
 
     for tr in table.css("tbody tr"):
-        assert (row_key := tr.css_first("td")) != None
-        stats[row_key.text()] = {}
+        row_key = prefix + tr.css("td")[0].text()
+        stats[row_key] = {}
 
         for i, td in enumerate(tr.css("td")[1:]):
-            stats[row_key.text()][heads[i].text()] = td.text()
+            stats[row_key][heads[i].text()] = td.text()
 
     return stats
 
@@ -45,15 +45,18 @@ def get_career_stats(player_name: str) -> dict:
     return scrape_table(table)
 
 
-def get_game_stats(player_name, year) -> dict:
+def get_game_stats(player_name, year: str) -> dict:
     document = parse_site(f"{NFL_URL}/players/{player_name}/stats/logs/{year}")
 
-    stats: dict = {}
-    for table in document.css("table"):
-        sub_season = table.parent.parent.css("h3")[0].text()
-        stats[sub_season] = scrape_table(table)
+    tables: list[Node] = document.css("table")
+    if tables[0].parent.parent.css("h3")[0].text() == "Preseason":
+        tables.pop(0)
 
-    return stats
+    ret: dict = {}
 
+    prefix: str = "Week "
+    for i, table in enumerate(tables):
+        ret = ret | scrape_table(table, prefix)
+        prefix = "(post) Week "
 
-# print(get_game_stats("saquon-barkley", "2022"))
+    return ret
