@@ -19,9 +19,9 @@ bot: commands.Bot = commands.Bot(
 
 
 @bot.command()
-async def stat(ctx: commands.Context) -> None:
-    embed: PlayerEmbed = PlayerEmbed("saquon-barkley")
-    year_select: YearSelect = YearSelect(embed, "saquon-barkley")
+async def stat(ctx: commands.Context, player_name: str) -> None:
+    embed: PlayerEmbed = PlayerEmbed(player_name)
+    year_select: YearSelect = YearSelect(embed, player_name)
 
     view: View = View()
     view.add_item(year_select)
