@@ -1,4 +1,6 @@
 import os
+import logging
+import logging.handlers
 
 import discord
 from discord.ext import commands
@@ -34,7 +36,35 @@ async def stat(ctx: commands.Context, player_name: str) -> None:
 
 
 if __name__ == "__main__":
-    if (token := os.environ.get("TOKEN")) == None:
-        raise EnvironmentError("Environment variable 'TOKEN' is required")
+    formatter = logging.Formatter(
+        "({asctime}) [{levelname}] {name}: {message}",
+        datefmt="%Y-%m-%d %H:%M:%S",
+        style="{",
+    )
 
-    bot.run(token)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.INFO)
+    stream_handler.setFormatter(formatter)
+
+    file_handler = logging.handlers.RotatingFileHandler(
+        filename="debug.log",
+        encoding="utf-8",
+        maxBytes=32 * 1024 * 1024,
+        backupCount=5,
+    )
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(formatter)
+
+    logging.basicConfig(
+        level=logging.DEBUG,
+        handlers=[
+            stream_handler,
+            file_handler,
+        ],
+    )
+
+    if (token := os.environ.get("TOKEN")) == None:
+        logging.error("Couldn't file environment variable 'TOKEN'")
+        exit()
+
+    bot.run(token, log_handler=None, root_logger=True)
