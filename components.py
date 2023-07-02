@@ -25,30 +25,31 @@ class GameSelect(Select):
     embed: PlayerEmbed
     player_name: str
     year: str
+    stats: dict
 
     def __init__(self, embed: PlayerEmbed, player_name, year: str):
         self.embed = embed
         self.player_name = player_name
         self.year = year
+        self.stats = data.get_game_stats(player_name, year)
 
-        opts: list[discord.SelectOption] = []
-        for week, stats in data.get_game_stats(player_name, year).items():
-            opts.append(
+        super().__init__(
+            placeholder="Select Game",
+            options=[
                 discord.SelectOption(
                     label=f"{week} ({stats['OPP']})",
                     value=week,
                 )
-            )
-
-        super().__init__(placeholder="Select Game", options=opts)
+                for week, stats in self.stats.items()
+            ],
+        )
 
     async def callback(self, interaction: discord.Interaction) -> None:
         assert isinstance(self.view, View)
 
-        stats: dict = data.get_game_stats(self.player_name, self.year)
         selection: str = self.values[0]
 
-        self.embed.load_dict(stats[selection])
+        self.embed.load_dict(self.stats[selection])
         self.embed.set_footer(text=f"Stats for {self.year} {selection}")
 
         await interaction.response.edit_message(
@@ -60,35 +61,36 @@ class GameSelect(Select):
 class YearSelect(Select):
     embed: PlayerEmbed
     player_name: str
+    stats: dict
 
     def __init__(self, embed: PlayerEmbed, player_name: str):
         self.embed = embed
         self.player_name = player_name
+        self.stats = data.get_career_stats(player_name)
 
-        opts: list[discord.SelectOption] = []
-        for year, stats in data.get_career_stats(player_name).items():
-            opts.append(
+        super().__init__(
+            placeholder="Select Year",
+            options=[
                 discord.SelectOption(
                     label=f"{year} ({stats['TEAM']})",
                     value=year,
                 )
-            )
-
-        super().__init__(placeholder="Select Year", options=opts)
+                for year, stats in self.stats.items()
+            ],
+        )
 
     async def callback(self, interaction: discord.Interaction) -> None:
         assert isinstance(self.view, View)
 
-        year: str = self.values[0]
-        stats: dict = data.get_career_stats(self.player_name)
+        selection: str = self.values[0]
 
-        self.embed.load_dict(stats[year])
-        self.embed.set_footer(text=f"Stats for {year}")
+        self.embed.load_dict(self.stats[selection])
+        self.embed.set_footer(text=f"Stats for {selection}")
 
         if len(children := self.view.children) > 1:
             self.view.remove_item(children[1])
 
-        self.view.add_item(GameSelect(self.embed, self.player_name, year))
+        self.view.add_item(GameSelect(self.embed, self.player_name, selection))
 
         await interaction.response.edit_message(
             embed=self.embed,

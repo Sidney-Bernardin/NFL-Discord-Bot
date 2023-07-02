@@ -20,6 +20,20 @@ bot: commands.Bot = commands.Bot(
 )
 
 
+@bot.event
+async def on_command_error(ctx: commands.Context, err: commands.CommandError) -> None:
+    original_err = getattr(err, "original", err)
+
+    if (
+        type(original_err) == data.PlayerNotFound
+        or type(original_err) == commands.MissingRequiredArgument
+    ):
+        await ctx.send(original_err.args[0])
+        return
+
+    raise err
+
+
 @bot.command()
 async def stat(ctx: commands.Context, player_name: str) -> None:
     embed: PlayerEmbed = PlayerEmbed(player_name)

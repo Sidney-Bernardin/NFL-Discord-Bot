@@ -6,6 +6,11 @@ NFL_URL = "https://www.nfl.com"
 NFL_PICTURE_URL = "https://static.www.nfl.com/image/private/t_player_profile_landscape_2x/f_auto/league"
 
 
+class PlayerNotFound(Exception):
+    def __init__(self, player_name):
+        super().__init__(f"Couldn't find player {player_name}")
+
+
 def parse_site(url: str) -> HTMLParser:
     res = requests.get(url)
     res.raise_for_status()
@@ -41,17 +46,21 @@ def get_player_info(player_name: str) -> dict:
 
 
 def get_career_stats(player_name: str) -> dict:
-    document = parse_site(f"{NFL_URL}/players/{player_name}/stats")
+    URI: str = f"{NFL_URL}/players/{player_name}/stats"
+    document = parse_site(URI)
 
-    table: Node = document.css("table")[-1]
+    if len(tables := document.css("table")) == 0:
+        raise PlayerNotFound(player_name)
 
-    return scrape_table(table)
+    return scrape_table(tables[-1])
 
 
 def get_game_stats(player_name, year: str) -> dict:
     document = parse_site(f"{NFL_URL}/players/{player_name}/stats/logs/{year}")
 
-    tables: list[Node] = document.css("table")
+    if len(tables := document.css("table")) == 0:
+        raise PlayerNotFound(player_name)
+
     if tables[0].parent.parent.css("h3")[0].text() == "Preseason":
         tables.pop(0)
 
