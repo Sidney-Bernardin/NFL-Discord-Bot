@@ -21,7 +21,10 @@ def scrape_table(table: Node, prefix: str = "") -> dict:
         stats[row_key] = {}
 
         for i, td in enumerate(tr.css("td")[1:]):
-            stats[row_key][heads[i].text()] = td.text()
+            if heads[i].text() in stats[row_key]:
+                stats[row_key][heads[i].text()] += f" : {td.text()}"
+            else:
+                stats[row_key][heads[i].text()] = td.text()
 
     return stats
 

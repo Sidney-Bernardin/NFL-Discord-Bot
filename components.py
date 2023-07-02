@@ -11,12 +11,7 @@ class PlayerEmbed(discord.Embed):
 
     def __init__(self, player_name: str):
         self.info = data.get_player_info(player_name)
-
-        super().__init__(
-            title=self.info["name"],
-            color=discord.Colour.blue(),
-        )
-
+        super().__init__(title=self.info["name"])
         self.set_thumbnail(url=self.info["picture"])
 
     def load_dict(self, d: dict) -> None:
