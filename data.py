@@ -11,32 +11,43 @@ class PlayerNotFound(Exception):
         super().__init__(f"Couldn't find player {player_name}")
 
 
-def parse_site(url: str) -> HTMLParser:
+def parse_page(url: str) -> HTMLParser:
+    """Returns the page's content as an HTMLParser."""
+
     res = requests.get(url)
     res.raise_for_status()
     return HTMLParser(res.text)
 
 
-def scrape_table(table: Node, prefix: str = "") -> dict:
+def table_to_dict(table: Node, prefix: str = "") -> dict:
+    """Returns a dictionary that contains data from the table."""
+
+    # Get the th tags from the table.
     heads: list[Node] = table.css("thead tr th")[1:]
-    stats: dict = {}
+
+    ret: dict = {}
 
     for tr in table.css("tbody tr"):
+        # Create a dictionary for the tr.
         row_key = prefix + tr.css("td")[0].text()
-        stats[row_key] = {}
+        ret[row_key] = {}
 
         for i, td in enumerate(tr.css("td")[1:]):
-            if heads[i].text() in stats[row_key]:
-                stats[row_key][heads[i].text()] += f" : {td.text()}"
+            # If the corresponding th was already used, combine the data.
+            if heads[i].text() in ret[row_key]:
+                ret[row_key][heads[i].text()] += f" : {td.text()}"
             else:
-                stats[row_key][heads[i].text()] = td.text()
+                ret[row_key][heads[i].text()] = td.text()
 
-    return stats
+    return ret
 
 
 def get_player_info(player_name: str) -> dict:
-    document = parse_site(f"{NFL_URL}/players/{player_name}")
+    """Returns basic info of the player from the NFL website."""
 
+    document = parse_page(f"{NFL_URL}/players/{player_name}")
+
+    # Get the img tag for the player's picture from the document.
     img: Node = document.css("img.img-responsive")[3]
 
     return {
@@ -45,30 +56,39 @@ def get_player_info(player_name: str) -> dict:
     }
 
 
-def get_career_stats(player_name: str) -> dict:
-    URI: str = f"{NFL_URL}/players/{player_name}/stats"
-    document = parse_site(URI)
+def get_career_stat_sheet(player_name: str) -> dict:
+    """Returns the players career stats from the NFL website."""
 
+    # Parse the player's page.
+    document = parse_page(f"{NFL_URL}/players/{player_name}/stats")
+
+    # Get the table tags from the document.
     if len(tables := document.css("table")) == 0:
         raise PlayerNotFound(player_name)
 
-    return scrape_table(tables[-1])
+    # Return the Career Stats table as a dictionary.
+    return table_to_dict(tables[-1])
 
 
-def get_game_stats(player_name, year: str) -> dict:
-    document = parse_site(f"{NFL_URL}/players/{player_name}/stats/logs/{year}")
+def get_week_stat_sheet(player_name, year: str) -> dict:
+    """Returns the year's weekly stats for the player, from the NFL website."""
 
+    document = parse_page(f"{NFL_URL}/players/{player_name}/stats/logs/{year}")
+
+    # Get the table tags from the document.
     if len(tables := document.css("table")) == 0:
         raise PlayerNotFound(player_name)
 
+    # If a Preseason table is present, remove it.
     if tables[0].parent.parent.css("h3")[0].text() == "Preseason":
         tables.pop(0)
 
     ret: dict = {}
 
+    # Combine the tables into a dictionary.
     prefix: str = "Week "
     for i, table in enumerate(tables):
-        ret = ret | scrape_table(table, prefix)
+        ret = ret | table_to_dict(table, prefix)
         prefix = "(post) Week "
 
     return ret
