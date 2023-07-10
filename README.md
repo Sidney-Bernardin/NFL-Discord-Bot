@@ -5,7 +5,7 @@
 1. [Usage](#usage)
 
 ## Overview
-This is a discord bot that lets users lookup the current stats of active NFL players by web-scraping nfl.com.
+This is a discord bot that lets users look up the current stats of active NFL players by web-scraping nfl.com.
 
 For more on how this project works, visit my [portfolio](https://sidney-bernardin.github.io/project/?id=nfl_discord_bot).
 
@@ -48,7 +48,7 @@ Lets users select stats of a game/year from an active NFL player's career.
 </div>
 
 #### Help
-Gives users instructions for use the bot.
+Gives users instructions for using the bot.
 <div align=left>
   <img src="./pictures/pic2.png" width="50%" />
 </div>
