@@ -36,7 +36,7 @@ Or, run in a container using the Dockerfile at the root of this repository.
 
 ``` bash
 docker build -t nfl_discord_bot .
-sudo docker run -it -e PREFIX=/ -e TOKEN=your_token_here sidneybernardin/nfl_discord_bot
+docker run -it -e PREFIX=/ -e TOKEN=your_token_here sidneybernardin/nfl_discord_bot
 ```
 
 ### Commands
