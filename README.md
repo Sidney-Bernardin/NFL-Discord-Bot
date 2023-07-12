@@ -5,7 +5,7 @@
 1. [Usage](#usage)
 
 ## Overview
-This is a discord bot that lets users look up the current stats of active NFL players by web-scraping nfl.com.
+This is a discord bot that lets users look up current stats for NFL players by web-scraping nfl.com.
 
 ## Usage
 
