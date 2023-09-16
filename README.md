@@ -9,29 +9,24 @@ This is a discord bot that lets users look up current stats for NFL players by w
 
 ## Usage
 
-### Running Locally
-Running PubSub locally on your machine is as simple as cloning this repository.
+### Install and run
 
+Clone this repository and set the following environment variables.
 ``` bash
 git clone https://github.com/Sidney-Bernardin/NFL-Discord-Bot.git
 cd NFL-Discord-Bot
-```
 
-Setting the following environment variables.
-
-``` bash
 export TOKEN=your_token_here
 export PREFIX=/
 ```
+Then run directly on your machine or with Docker.
 
-Then running the Python program yourself.
-
+#### Run directly on your machine.
 ``` bash
 python main.py
 ```
 
-Or, run in a container using the Dockerfile at the root of this repository.
-
+#### Run with Docker.
 ``` bash
 docker build -t nfl_discord_bot .
 docker run -it -e PREFIX=/ -e TOKEN=your_token_here sidneybernardin/nfl_discord_bot
