@@ -7,7 +7,7 @@ import data
 
 
 class PlayerEmbed(discord.Embed):
-    """Sets info to the stats of a player."""
+    """Displays a player's info and stats."""
 
     info: dict
 
@@ -29,30 +29,30 @@ class PlayerEmbed(discord.Embed):
 
 class WeekSelect(Select):
     """
-    Sets the PlayerEmbed's info to the stats of the selected week from the
+    Sets the PlayerEmbed's fields to the stats of the selected week from the
     player's year.
     """
 
     embed: PlayerEmbed
     player_name: str
     year: str
-    stats_sheet: dict
+    stat_sheet: dict
 
     def __init__(self, embed: PlayerEmbed, player_name, year: str) -> None:
         self.embed = embed
         self.player_name = player_name
         self.year = year
-        self.stats_sheet = data.get_week_stat_sheet(player_name, year)
+        self.stat_sheet = data.get_week_stat_sheet(player_name, year)
 
         super().__init__(
             placeholder="Select Game",
-            # Create an option for each of the stats_sheet's weeks.
+            # Create an option for each of the stat-sheet's weeks.
             options=[
                 discord.SelectOption(
                     label=f"{week} ({stats['OPP']})",
                     value=week,
                 )
-                for week, stats in self.stats_sheet.items()
+                for week, stats in self.stat_sheet.items()
             ],
         )
 
@@ -62,8 +62,8 @@ class WeekSelect(Select):
         # Get the selected week.
         selection: str = self.values[0]
 
-        # Update the PlayerEmbed's info.
-        self.embed.set_stats(self.stats_sheet[selection])
+        # Update the PlayerEmbed's fields.
+        self.embed.set_stats(self.stat_sheet[selection])
         self.embed.set_footer(text=f"Stats for {self.year} {selection}")
 
         await interaction.response.edit_message(
@@ -74,7 +74,7 @@ class WeekSelect(Select):
 
 class YearSelect(Select):
     """
-    Sets the PlayerEmbed's info to the stats from the selected year of the
+    Sets the PlayerEmbed's fields to the stats from the selected year of the
     player's NFL career. And adds a new GameSelect to the View.
     """
 
@@ -89,7 +89,7 @@ class YearSelect(Select):
 
         super().__init__(
             placeholder="Select Year",
-            # Create an option for each of the stat_sheet's years.
+            # Create an option for each of the stat-sheet's years.
             options=[
                 discord.SelectOption(
                     label=f"{year} ({stats['TEAM']})",
@@ -105,7 +105,7 @@ class YearSelect(Select):
         # Get the selected year.
         selection: str = self.values[0]
 
-        # Update the PlayerEmbed's info.
+        # Update the PlayerEmbed's fields.
         self.embed.set_stats(self.stat_sheet[selection])
         self.embed.set_footer(text=f"Stats for {selection}")
 

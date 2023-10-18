@@ -12,7 +12,7 @@ intents = discord.Intents()
 intents.messages = True
 intents.message_content = True
 
-# Create a bot.
+# Create the bot.
 bot: commands.Bot = commands.Bot(
     command_prefix=config["PREFIX"],
     intents=intents,
@@ -38,16 +38,16 @@ async def on_command_error(ctx: commands.Context, err: commands.CommandError) ->
     expected, it's raised instead.
     """
 
-    # Get the error's original exception and define whtat is's expected to be.
-    original_err = getattr(err, "original", err)
+    ORIGINAL_ERR = getattr(err, "original", err)
     EXPECTED = [data.PlayerNotFound, commands.MissingRequiredArgument]
 
-    if type(original_err) not in EXPECTED:
+    # Check if the original error is expected.
+    if type(ORIGINAL_ERR) not in EXPECTED:
         raise err
 
     # Create an Embed containing the error message.
     embed: discord.Embed = discord.Embed(
-        title=original_err.args[0],
+        title=ORIGINAL_ERR.args[0],
         color=discord.Color.red(),
     )
 
