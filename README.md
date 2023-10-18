@@ -31,7 +31,11 @@ python main.py
 #### Run with Docker.
 ``` bash
 docker build -t nfl_discord_bot .
-docker run -it -e PREFIX=/ -e TOKEN=your_token_here nfl_discord_bot
+docker run -it \
+    -e PREFIX=/ \
+    -e TOKEN=your_token_here \
+    -v ./logs/:/app/logs \
+    nfl_discord_bot
 ```
 
 ### Commands

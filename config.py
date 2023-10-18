@@ -23,13 +23,17 @@ formatter = logging.Formatter(
     style="{",
 )
 
+try:
+    os.mkdir("logs")
+except FileExistsError:
+    pass
+
 # Create a logging handler to write INFO level logs to stdout.
 stream_handler = logging.StreamHandler()
 stream_handler.setLevel(logging.INFO)
 stream_handler.setFormatter(formatter)
 
 # Create a logging handler to write DEBUG level logs to .log files.
-os.mkdir("logs")
 file_handler = logging.handlers.RotatingFileHandler(
     filename="logs/debug.log",
     encoding="utf-8",
