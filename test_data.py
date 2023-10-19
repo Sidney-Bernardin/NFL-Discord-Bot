@@ -336,3 +336,7 @@ class TestData(unittest.TestCase):
                 raise e
             except Exception as e:
                 self.assertIs(type(e), t["expected_exeption"])
+
+
+if __name__ == "__main__":
+    unittest.main()
