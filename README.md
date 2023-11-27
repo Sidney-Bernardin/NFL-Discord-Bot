@@ -1,6 +1,6 @@
-# NFL-Discord-Bot
-
 [![Unit Tests](https://github.com/Sidney-Bernardin/NFL-Discord-Bot/actions/workflows/unit_tests.yaml/badge.svg)](https://github.com/Sidney-Bernardin/NFL-Discord-Bot/actions/workflows/unit_tests.yaml)
+
+# NFL-Discord-Bot
 
 **Contents**
 1. [Overview](#overview)
