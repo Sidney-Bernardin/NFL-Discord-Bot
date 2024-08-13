@@ -9,7 +9,7 @@ class TestData(unittest.TestCase):
                 "player_name": "saquon-barkley",
                 "expected_info": {
                     "name": "Saquon Barkley",
-                    "picture": "https://static.www.nfl.com/image/private/t_player_profile_landscape_2x/f_auto/league/o8tlhps5u1tvnaaxlpjk",
+                    "picture": "https://static.www.nfl.com/image/private/t_player_profile_landscape_2x/f_auto/league/ugiuanl8bf6uoya5mgid",
                 },
                 "expected_exeption": None,
             },
