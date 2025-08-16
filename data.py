@@ -3,7 +3,7 @@ from selectolax.parser import HTMLParser, Node
 
 
 NFL_URL = "https://www.nfl.com"
-NFL_PICTURE_URL = "https://static.www.nfl.com/image/private/t_player_profile_landscape_2x/f_auto/league"
+NFL_PICTURE_URL = "https://static.www.nfl.com/image/upload/t_player_profile_landscape/f_auto/league"
 
 
 class PlayerNotFound(Exception):
@@ -75,7 +75,11 @@ def get_career_stat_sheet(player_name: str) -> dict:
 def get_week_stat_sheet(player_name, year: str) -> dict:
     """Returns the year's weekly stats for the player, from the NFL website."""
 
-    doc: HTMLParser = parse_page(f"{NFL_URL}/players/{player_name}/stats/logs/{year}")
+    try:
+        doc: HTMLParser = parse_page(f"{NFL_URL}/players/{player_name}/stats/logs/{year}")
+    except requests.HTTPError as e:
+        if e.response.status_code == 500:
+            raise PlayerNotFound(player_name)
 
     # Get the tables from the document.
     if len(tables := doc.css("table")) == 0:

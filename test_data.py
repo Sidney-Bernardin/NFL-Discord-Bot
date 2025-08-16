@@ -9,7 +9,7 @@ class TestData(unittest.TestCase):
                 "player_name": "saquon-barkley",
                 "expected_info": {
                     "name": "Saquon Barkley",
-                    "picture": "https://static.www.nfl.com/image/private/t_player_profile_landscape_2x/f_auto/league/ugiuanl8bf6uoya5mgid",
+                    "picture": "https://static.www.nfl.com/image/upload/t_player_profile_landscape/f_auto/league/ern1nbhivkmwkg82c7v1",
                 },
                 "expected_exeption": None,
             },
@@ -63,6 +63,12 @@ class TestData(unittest.TestCase):
     def test_get_week_stat_sheet(self):
         test_table: list[dict] = [
             {
+                "player_name": "func-foo",
+                "year": "2022",
+                "expected_stats": {},
+                "expected_exeption": data.PlayerNotFound,
+            },
+            {
                 "player_name": "saquon-barkley",
                 "year": "2022",
                 "expected_stats": {
@@ -106,7 +112,7 @@ class TestData(unittest.TestCase):
                         "LOST": "",
                     },
                     "Week 15": {
-                        "Game Date": "12/19/2022",
+                        "Game Date": "12/18/2022",
                         "OPP": "@Commanders",
                         "RESULT": "W 20 - 12",
                         "ATT": "18",
@@ -249,7 +255,7 @@ class TestData(unittest.TestCase):
                         "LOST": "",
                     },
                     "Week 3": {
-                        "Game Date": "09/27/2022",
+                        "Game Date": "09/26/2022",
                         "OPP": "Cowboys",
                         "RESULT": "L 16 - 23",
                         "ATT": "14",
@@ -288,7 +294,7 @@ class TestData(unittest.TestCase):
                         "LOST": "0",
                     },
                     "(post) Week 2": {
-                        "Game Date": "01/22/2023",
+                        "Game Date": "01/21/2023",
                         "OPP": "@Eagles",
                         "RESULT": "L 7 - 38",
                         "ATT": "9",
@@ -315,12 +321,6 @@ class TestData(unittest.TestCase):
                     },
                 },
                 "expected_exeption": None,
-            },
-            {
-                "player_name": "func-foo",
-                "year": "2022",
-                "expected_stats": {},
-                "expected_exeption": data.PlayerNotFound,
             },
         ]
 
